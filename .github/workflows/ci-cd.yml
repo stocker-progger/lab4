@@ -3,7 +3,7 @@ name: Publish to GitHub Pages
 on:
   release:
     types:
-      - published  # Запускается, когда создается новый релиз
+      - published
 
 jobs:
   deploy:
@@ -13,16 +13,16 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js (если требуется для вашего проекта)
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Используйте вашу версию Node.js, если нужно
+          node-version: '14'
 
-      - name: Install dependencies (если требуется)
-        run: npm install  # Замените на нужную команду, если используется другой менеджер пакетов
+      - name: Install dependencies
+        run: npm install
 
       - name: Build the project
-        run: npm run build  # Или команда для сборки вашего проекта
+        run: npm run build
 
       - name: Create release directory
         run: |
@@ -30,7 +30,7 @@ jobs:
           mkdir -p build/$VERSION
 
       - name: Move build files
-        run: mv build/* build/$VERSION/  # Переместите собранные файлы в каталог версии
+        run: mv build/* build/$VERSION/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
