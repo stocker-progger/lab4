@@ -1,0 +1,41 @@
+name: Publish to GitHub Pages
+
+on:
+  release:
+    types:
+      - published  # Запускается, когда создается новый релиз
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js (если требуется для вашего проекта)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Используйте вашу версию Node.js, если нужно
+
+      - name: Install dependencies (если требуется)
+        run: npm install  # Замените на нужную команду, если используется другой менеджер пакетов
+
+      - name: Build the project
+        run: npm run build  # Или команда для сборки вашего проекта
+
+      - name: Create release directory
+        run: |
+          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\///')
+          mkdir -p build/$VERSION
+
+      - name: Move build files
+        run: mv build/* build/$VERSION/  # Переместите собранные файлы в каталог версии
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/$VERSION  # Публикуйте файлы, относящиеся к релизу
+          user_name: 'GitHub Actions'
+          user_email: 'actions@github.com'
