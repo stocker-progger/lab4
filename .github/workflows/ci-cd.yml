@@ -3,7 +3,7 @@ name: Publish to GitHub Pages
 on:
   release:
     types:
-      - published
+      - published  # Запускается при публикации нового релиза
 
 jobs:
   deploy:
@@ -13,29 +13,18 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build the project
-        run: npm run build
-
       - name: Create release directory
         run: |
-          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\///')
-          mkdir -p build/$VERSION
+          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\///')  # Получаем имя тега
+          mkdir -p build/$VERSION  # Создаём директорию для версии
 
       - name: Move build files
-        run: mv build/* build/$VERSION/
+        run: mv * build/$VERSION/  # Перемещаем файлы в соответствующую папку для версии
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/$VERSION  # Публикуйте файлы, относящиеся к релизу
+          publish_dir: ./build/$VERSION  # Публикуем файлы в папку для версии
           user_name: 'GitHub Actions'
           user_email: 'actions@github.com'
