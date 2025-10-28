@@ -3,7 +3,7 @@ name: Publish to GitHub Pages
 on:
   release:
     types:
-      - published  # Запускается при публикации нового релиза
+      - published
 
 jobs:
   deploy:
@@ -19,12 +19,12 @@ jobs:
           mkdir -p build/$VERSION  # Создаём директорию для версии
 
       - name: Move build files
-        run: mv * build/$VERSION/  # Перемещаем файлы в соответствующую папку для версии
+        run: mv * build/$VERSION/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/$VERSION  # Публикуем файлы в папку для версии
+          publish_dir: ./build/$VERSION
           user_name: 'GitHub Actions'
           user_email: 'actions@github.com'
